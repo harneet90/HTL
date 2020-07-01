@@ -55,10 +55,16 @@ class HVector
               }
               delete[] (uint8_t*)data;
               data = temp;
-              data[size++] = obj;              
+              new(&data[size++]) T(obj);              
          }
          else
-	     data[size++] = obj;
+	     new(&data[size++]) T(obj);
+    }
+    void pop_back()
+    {
+        if(size == 0)
+            return;
+        data[size--].~T();
     }
     virtual ~HVector(){ 
          for(size_t i=0;i < size;i++)
