@@ -46,7 +46,28 @@ class HVector
              throw std::out_of_range("index out of range");
         return data[index];
     }
-    void push_back(T &obj)
+    void push_back(T &&obj)
+    {
+         if(count == buff_size)
+         {
+              if(buff_size== 0)
+		buff_size= 1;
+	      else
+		buff_size*= 2;
+              T *temp= (T*)new uint8_t(sizeof(T) * buff_size);
+	      for(size_t i=0;i < count;i++)
+              {
+                 new(&temp[i]) T(data[i]);
+		 data[i].~T();
+              }
+              delete[] (uint8_t*)data;
+              data = temp;
+              new(&data[count++]) T(obj);              
+         }
+         else
+	     new(&data[count++]) T(obj);
+    }
+    void push_back(const T &obj)
     {
          if(count == buff_size)
          {
@@ -82,4 +103,61 @@ class HVector
     }
     size_t capacity(){return buff_size;}
     size_t size(){return count;}
+    class iterator
+    {
+          long index;
+          HVector<T> *parent;
+          iterator(HVector<T> *ptr, long i)
+          {
+              if(ptr == NULL || i < 0 || i > parent->size())
+              {
+                  parent = NULL;
+                  index=-1;
+              }
+              else
+              {
+                  parent = ptr;
+                  index = i;
+              }
+          } 
+		
+          public:
+          iterator():index(-1),parent(NULL){}
+          T* operator() ()
+          {
+             if(parent == NULL || index < 0 || index >= parent->count)
+                 throw std::out_of_range("index out of range");
+             return &(parent->data[index]);
+          }
+          T& operator* ()
+          {
+             if(parent == NULL || index < 0 || index >= parent->count)
+                 throw std::out_of_range("index out of range");
+             return (parent->data[index]);
+          }
+          iterator operator++()
+          {
+              index++;
+              return *this;
+          }
+          iterator operator++(int)
+          {         
+              return iterator(parent, index++);
+          }
+          bool operator== (const iterator& other)
+          {
+              return (parent == other.parent && index == other.index);
+          } 
+          bool operator!= (const iterator& other)
+          {
+              return (parent != other.parent || index != other.index);
+          }
+          friend HVector;
+    };
+    iterator begin()
+    {
+       if(count == 0)
+          return iterator();
+       return iterator(this, 0);
+    }
 };
