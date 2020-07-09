@@ -42,8 +42,6 @@ class HVector
     }
     T& operator[](size_t index)
     {
-        if(index >= count)
-             throw std::out_of_range("index out of range");
         return data[index];
     }
     void push_back(T &&obj)
@@ -142,7 +140,8 @@ class HVector
           }
           iterator operator++(int)
           {         
-              return iterator(parent, index++);
+              index++;
+              return iterator(parent, index);
           }
           bool operator== (const iterator& other)
           {
@@ -159,5 +158,29 @@ class HVector
        if(count == 0)
           return iterator();
        return iterator(this, 0);
+    }
+    iterator end()
+    {
+       if(count == 0)
+          return iterator();
+       return iterator(this, count);
+    }
+    bool empty()
+    {
+        return count > 0;
+    }
+    T at(size_t index)
+    {
+        if(index >= count)
+             throw std::out_of_range("index out of range");
+        return data[index];
+    }
+    T front()
+    {
+       return data[0];
+    }
+    T back()
+    {
+       return data[count-1];
     }
 };
