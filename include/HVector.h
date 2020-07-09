@@ -151,6 +151,10 @@ class HVector
           {
               return (parent != other.parent || index != other.index);
           }
+          long operator- (const iterator& other)
+          {
+              return (index - other.index);
+          }
           friend HVector;
     };
     iterator begin()
@@ -182,5 +186,18 @@ class HVector
     T back()
     {
        return data[count-1];
+    }
+    void reserve(size_t n)
+    {
+        if(n <= count)
+            return;
+        T* temp = (T*)new uint8_t[n * sizeof(T)];
+        for(size_t i=0;i<count;i++)
+        { 
+            new(&temp[i]) T(data[i]);
+        }
+        delete[] (uint8_t*)data;
+        data = temp;
+        buff_size = n;
     }
 };
