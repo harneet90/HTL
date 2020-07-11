@@ -107,7 +107,7 @@ class HVector
           HVector<T> *parent;
           iterator(HVector<T> *ptr, long i)
           {
-              if(ptr == NULL || i < 0 || i > parent->size())
+              if(ptr == NULL || i < 0 || i > ptr->size())
               {
                   parent = NULL;
                   index=-1;
@@ -155,6 +155,24 @@ class HVector
           {
               return (index - other.index);
           }
+          iterator operator+ (long s)
+          {
+              return iterator(parent, index + s);
+          }
+          iterator& operator+= (long s)
+          {
+              index += s;
+              return *this;
+          }
+          iterator operator- (long s)
+          {
+              return iterator(parent, index - s);
+          }
+          iterator& operator-= (long s)
+          {
+              index -= s;
+              return *this;
+          }
           friend HVector;
     };
     iterator begin()
@@ -199,5 +217,26 @@ class HVector
         delete[] (uint8_t*)data;
         data = temp;
         buff_size = n;
+    }
+    iterator insert(iterator pos, const T& ele)
+    {
+         T* temp = data;
+         long l = pos-begin();
+         long i;
+        if(l < 0 || l > count)
+             return end();
+        if(buff_size <= count)
+        {
+            temp = (T*)new uint8_t[buff_size * 2 * sizeof(T)];
+            for(i=0;i<l;i++)
+                new(&temp[i]) T(data[i]);
+            buff_size *= 2; 
+        }  
+        for(i=count;i>l;i--)
+            new(&temp[i]) T(data[i-1]);
+        new(&temp[l]) T(ele);
+        count++;
+        data = temp;
+        return iterator(this,l);
     }
 };
