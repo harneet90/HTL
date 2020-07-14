@@ -2,11 +2,18 @@ import os
 
 def BuildUnitTest():
     print("Building Unit Test...")
+    current_path = os.getcwd()
     os.chdir(os.path.join(os.getcwd(),os.pardir,"UnitTest"))
     os.system("make -f makefile.mak clean")
     os.system("make -f makefile.mak")
     os.system("make -f makefile.mak install")
-    if (not os.path.isfile(os.path.join(os.getcwd(),os.pardir,"bin","UnitTest"))):
+    print(os.listdir())
+    os.chdir(os.path.join(os.getcwd(),os.pardir))
+    print(os.listdir())
+    if (os.isdir("bin")):
+        os.chdir(os.path.join(os.getcwd(),"bin"))
+        print(os.listdir())
+    if (not os.path.isfile(os.path.join(current_path,"tests","bin","UnitTest"))):
         print("Build Failed")
     else:
         print("Build Successful")
