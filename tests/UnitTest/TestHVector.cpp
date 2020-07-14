@@ -12,6 +12,7 @@ void TestHVector_cons()
     CHECK_RESULT(x.capacity(),0);
     END_TEST_CASE();
 }
+
 void TestHVector()
 {
     BEGIN_TEST("HVector");
