@@ -32,4 +32,5 @@ static class Test
                             cout<<"PASS\n"; \
                         else \
                             cout<<"FAIL\n"; }
+
 void TestHVector();
