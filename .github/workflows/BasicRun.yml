@@ -6,7 +6,7 @@ on:
       - feature_unit_test
   pull_request:
     branches: 
-      - feature_unit_test
+      - feature_vector
 
 
 jobs:
