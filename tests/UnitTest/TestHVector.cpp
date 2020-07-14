@@ -16,7 +16,7 @@ void TestHVector()
 {
     BEGIN_TEST("HVector");
     TestHVector_cons();
-    TestHVector_push_back();
-    TestHVector_pop_back();
+    //TestHVector_push_back();
+    //TestHVector_pop_back();
     END_TEST();
 }
