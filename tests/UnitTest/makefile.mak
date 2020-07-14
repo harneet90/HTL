@@ -7,7 +7,7 @@ CXXFLAGS := -I$(INCLUDE) -I.
 all: UnitTest
 
 UnitTest:
-	$(CXX) $(SRC_FILES) -o $@
+	$(CXX) $(CXXFLAGS) $(SRC_FILES) -o $@
 
 $(OUT_DIR):
 	mkdir -p $(OUT_DIR)
