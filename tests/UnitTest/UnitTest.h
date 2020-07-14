@@ -1,5 +1,6 @@
 #pragma once
-
+#include<iostream>
+using namespace std;
 static int pass = 0;
 static int total = 0;
 int grand_total;
@@ -10,7 +11,7 @@ int total_pass;
                             if(!(cond)) pass++; \
                             else \
                             { \
-                                cout<<"Test "<<__function__<<" failed on line "<<__LINE__<<"\n"; \
+                                cout<<"Test "<<__func__<<" failed on line "<<__LINE__<<"\n"; \
                             } \
                            }
                            
