@@ -10,7 +10,7 @@ def BuildUnitTest():
     print(os.listdir())
     os.chdir(os.path.join(os.getcwd(),os.pardir))
     print(os.listdir())
-    if (os.isdir("bin")):
+    if (os.path.isdir("bin")):
         os.chdir(os.path.join(os.getcwd(),"bin"))
         print(os.listdir())
     if (not os.path.isfile(os.path.join(current_path,"tests","bin","UnitTest"))):
