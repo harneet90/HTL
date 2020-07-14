@@ -18,7 +18,7 @@ static int cons_call = 0;
 static int des_call = 0;
 static int copy_cons_call = 0;
 
-static class Test
+class Test
 {
     public:
     Test(){cons_call++;}
