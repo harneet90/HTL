@@ -3,8 +3,8 @@
 using namespace std;
 static int pass = 0;
 static int total = 0;
-int grand_total;
-int total_pass;
+extern int grand_total;
+extern int total_pass;
 
 #define CHECK_RESULT(cond) { \
                             total++; \
