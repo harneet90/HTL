@@ -2,7 +2,8 @@ name: BasicRun
 
 on:
   push:
-    branches: [ feature_unit_test ]
+    branches:
+      - feature_unit_test
 
 
 jobs:
