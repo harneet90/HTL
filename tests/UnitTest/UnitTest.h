@@ -29,8 +29,8 @@ class Test
 
 #define BEGIN_TEST(name) {cout<<"Testing "<<name<<endl;}
 #define END_TEST() {cout<<"\tPassed:"<<pass<<"/"<<total<<endl<<endl; grand_total += total; total_pass += pass;}
-#define BEGIN_TEST_CASE(name) cout<<"\t"<<name<<"..."; int initial_pass = pass;
-#define END_TEST_CASE() {if(initial_pass == pass) \
+#define BEGIN_TEST_CASE(name) cout<<"\t"<<name<<"..."; int initial_fail = total - pass;
+#define END_TEST_CASE() {if(initial_fall == (total - pass)) \
                             cout<<"PASS\n"; \
                         else \
                             cout<<"FAIL\n"; }
