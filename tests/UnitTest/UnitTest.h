@@ -33,6 +33,8 @@ class Test
 #define END_TEST_CASE() {if(initial_fail == (total - pass)) \
                             cout<<"PASS\n"; \
                         else \
-                            cout<<"FAIL\n"; }
+                            cout<<"FAIL\n"; \
+                        cons_called = des_called = copy_cons_called = 0; \
+                            }
 
 void TestHVector();
