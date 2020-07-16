@@ -20,10 +20,10 @@ void TestHVector_push_back()
     x.push_back(5);
     CHECK_RESULT(x.size()!=1);
     CHECK_RESULT(x.capacity()!=1);
-    x.push_back(6)
+    x.push_back(6);
     CHECK_RESULT(x.size()!=2);
     CHECK_RESULT(x.capacity()!=2);
-    x.push_back(7)
+    x.push_back(7);
     CHECK_RESULT(x.size()!=3);
     CHECK_RESULT(x.capacity()!=4);
     for(int i=0;i<3;i++)
