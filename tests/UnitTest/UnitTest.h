@@ -34,7 +34,7 @@ class Test
                             cout<<"PASS\n"; \
                         else \
                             cout<<"FAIL\n"; \
-                        cons_called = des_called = copy_cons_called = 0; \
+                        cons_call = des_call = copy_cons_call = 0; \
                             }
 
 void TestHVector();
