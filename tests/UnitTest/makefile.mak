@@ -2,7 +2,7 @@ INCLUDE := ../../include
 SRC_FILES := UnitTest.cpp \
 	TestHVector.cpp
 OUT_DIR := ../bin         
-CXXFLAGS := -std=c++11 -I$(INCLUDE) -I.
+CXXFLAGS := -std=c++11 -Wall -Wextra -I$(INCLUDE) -I.
 
 all: UnitTest
 
