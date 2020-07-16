@@ -46,6 +46,8 @@ public:
     HVector(size_t size):count(size), buff_size(size)
     {
         data = _allocate(size);
+        for(int i=0;i<size;i++)
+            new(&data[i]) T();
     }
     HVector(const HVector &other)
     {
