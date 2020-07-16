@@ -16,8 +16,9 @@ def BuildUnitTest():
 def RunUnitTest():
     print("Running Unit Test...")
     os.chdir(os.path.join(os.getcwd(),os.pardir,"bin"))
-    os.system("./UnitTest")
-    
+    res = os.system("./UnitTest")
+    if res != 0:
+        sys.exit(res)
 def main():
     BuildUnitTest()
     RunUnitTest()
