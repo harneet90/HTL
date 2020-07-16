@@ -64,7 +64,7 @@ public:
     {
     }
     
-    HVector(initializer_list<T> list):count(list.size()),buff_size(list.size())
+    HVector(std::initializer_list<T> list):count(list.size()),buff_size(list.size())
     {
         data = _allocate(buff_size);
         int i=0;
