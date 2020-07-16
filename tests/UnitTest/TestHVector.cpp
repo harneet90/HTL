@@ -10,7 +10,7 @@ void TestHVector_cons()
     HVector<Test> y(3);
     CHECK_RESULT(y.size()!=3);
     CHECK_RESULT(y.capacity()!=3);
-    CHECK_RESULT(cons_called != 3);
+    CHECK_RESULT(cons_call != 3);
     END_TEST_CASE();
 }
 
