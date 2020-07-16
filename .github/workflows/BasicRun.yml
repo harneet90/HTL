@@ -3,10 +3,11 @@ name: BasicRun
 on:
   push:
     branches:
-      - feature_unit_test
+      - feature_vector
   pull_request:
     branches: 
-      - feature_vector
+      - develop
+      - feature_vector 
 
 
 jobs:
