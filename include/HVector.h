@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
+#include <initializer_list>
 template<class T>
 class HVector
 {
@@ -46,14 +47,29 @@ public:
     HVector(size_t size):count(size), buff_size(size)
     {
         data = _allocate(size);
-        for(int i=0;i<size;i++)
+        for(int i=0;i < size;i++)
             new(&data[i]) T();
     }
-    HVector(const HVector &other)
+    HVector(size_t size, const T &val):count(size), buff_size(size)
     {
-        count = other.count;
-        buff_size= other.buff_size;
-        data = _allocateAndCopy(data, buff_size, 0, count, 0); 
+        data = _allocate(size);
+        for(int i=0;i < size;i++)
+            new(&data[i]) T(val);
+    }
+    HVector(const HVector &other):count(other.size), buff_size(other.size)
+    {
+        data = _allocateAndCopy(other.data, buff_size, 0, count, 0); 
+    }
+    HVector(HVector &&other):count(other.size), buff_size(other.size), data(other.data)
+    {
+    }
+    
+    HVector(initializer_list<T> list):count(list.size()),buff_size(list.size())
+    {
+        data = _allocate(buff_size);
+        int i=0;
+        for(auto ele:list)
+            new(&data[i++]) T(ele);
     }
     HVector& operator=(const HVector &other)
     {
@@ -98,87 +114,90 @@ public:
     size_t size() const {return count;}
     class iterator
     {
-        long index;
-        const HVector<T> *parent;
-        iterator(const HVector<T> *ptr, long i):parent(ptr)
+        T *parent;
+        iterator(T *ptr):parent(ptr)
         {
-            if(ptr == NULL || i < 0 || i > ptr->size())
-            {
-                index=-1;
-            }
-            else
-            {
-                index = i;
-            }
         } 
         
     public:
-        iterator():index(-1), parent(NULL){}
+        typedef iterator self_type;
+        typedef T value_type;
+        typedef T& reference;
+        typedef T* pointer;
+        typedef std::forward_iterator_tag iterator_category;
+        typedef int difference_type;
+        iterator(): parent(NULL){}
         T* operator() ()
         {
-            if(parent == NULL || index < 0 || index >= parent->count)
-            throw std::out_of_range("index out of range");
-            return &(parent->data[index]);
+            return parent;
         }
         T& operator* ()
         {
-            if(parent == NULL || index < 0 || index >= parent->count)
-            throw std::out_of_range("index out of range");
-            return (parent->data[index]);
+            return *parent;
         }
         iterator operator++()
         {
-            index++;
+            parent++;
             return *this;
         }
         iterator operator++(int)
         {         
-            index++;
-            return iterator(parent, index);
+            T* p = parent++;
+            return iterator(p);
+        }
+        iterator operator--()
+        {
+            parent--;
+            return *this;
+        }
+        iterator operator--(int)
+        {         
+            T* p = parent--;
+            return iterator(p);
         }
         bool operator== (const iterator& other)
         {
-            return (parent == other.parent && index == other.index);
+            return (parent == other.parent);
         } 
         bool operator!= (const iterator& other)
         {
-            return (parent != other.parent || index != other.index);
+            return (parent != other.parent);
         }
+        bool operator< (const iterator& other)
+        {
+            return (parent < other.parent);
+        } 
         long operator- (const iterator& other)
         {
-            return (index - other.index);
+            return (parent - other.parent);
         }
         iterator operator+ (long s)
         {
-            return iterator(parent, index + s);
+            return iterator(parent+s);
         }
         iterator& operator+= (long s)
         {
-            index += s;
+            parent += s;
             return *this;
         }
         iterator operator- (long s)
         {
-            return iterator(parent, index - s);
+            return iterator(parent - s);
         }
         iterator& operator-= (long s)
         {
-            index -= s;
+            parent -= s;
             return *this;
         }
         friend HVector;
     };
     iterator begin()
     {
-        if(count == 0)
-        return iterator();
-        return iterator(this, 0);
+        return iterator(data);
     }
     iterator end()
     {
-        if(count == 0)
-        return iterator();
-        return iterator(this, count);
+        return iterator(data + count);
     }
     bool empty()
     {
@@ -232,6 +251,6 @@ public:
             _deallocater(data, count);
         count++;
         data = temp;
-        return iterator(this,l);
+        return iterator(data + l);
     }
 };
