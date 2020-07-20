@@ -29,7 +29,7 @@ void TestHVector_cons()
 
 void TestHVector_push_pop()
 {
-    BEGIN_TEST_CASE("HVector_push_back");
+    BEGIN_TEST_CASE("HVector_push_pop");
     HVector<int> x;
     x.push_back(5);
     CHECK_RESULT(x.size() != 1);
@@ -47,10 +47,10 @@ void TestHVector_push_pop()
     y.push_back(t);
     y.push_back(Test());
     CHECK_RESULT(cons_call != 2);
-    CHECK_RESULT(copy_cons_call != 1);
-    CHECK_RESULT(move_cons_call != 1);
+    CHECK_RESULT(copy_cons_call != 2);
+    CHECK_RESULT(move_cons_call != 0);
     y.pop_back();
-    CHECK_RESULT(des_call != 1);
+    CHECK_RESULT(des_call != 2);
     CHECK_RESULT(y.size() != 1);
     CHECK_RESULT(y.capacity() != 2);
     END_TEST_CASE();
@@ -58,6 +58,7 @@ void TestHVector_push_pop()
 
 void TestHVector_begin_end()
 {
+    BEGIN_TEST_CASE("HVector_begin_end");
     HVector<int> x;
     x.push_back(5);
     CHECK_RESULT(*(x.begin()) != 5);
@@ -68,6 +69,7 @@ void TestHVector_begin_end()
     int i=0;
     for(auto itr = x.begin();itr != x.end();itr++,i++)
         CHECK_RESULT(*itr != 5 + i);
+    END_TEST_CASE();
 }
 
 void TestHVector()
