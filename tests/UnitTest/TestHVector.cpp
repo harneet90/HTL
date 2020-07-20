@@ -47,6 +47,7 @@ void TestHVector_push_pop()
     y.push_back(t);
     y.push_back(Test());
     CHECK_RESULT(cons_call != 2);
+    cout<<"\nCalls"<<copy_cons_call<<" "<<move_cons_call<<" "<<des_call<<"\n";
     CHECK_RESULT(copy_cons_call != 2);
     CHECK_RESULT(move_cons_call != 0);
     y.pop_back();
