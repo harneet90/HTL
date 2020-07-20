@@ -15,14 +15,14 @@ void TestHVector_cons()
     CHECK_RESULT(cons_call != 3);
     /* Fill Constructor */
     HVector<int> z(4,4);
-    CHECK_RESULT(y.size() != 4);
+    CHECK_RESULT(z.size() != 4);
     for(int i=0;i<4;i++)
         CHECK_RESULT(z[i] != 4);
     /* Initializer List Construcotr */
     HVector<int> w{1,2,3,4,5};
-    CHECK_RESULT(y.size() != 5);
-    CHECK_RESULT(y.capacity() != 5);
-    for(int i=i;i<=5;i++)
+    CHECK_RESULT(w.size() != 5);
+    CHECK_RESULT(w.capacity() != 5);
+    for(int i=1;i<=5;i++)
         CHECK_RESULT(w[i-1] != i);
     END_TEST_CASE();
 }
@@ -51,8 +51,8 @@ void TestHVector_push_pop()
     CHECK_RESULT(move_cons_call != 1);
     y.pop_back();
     CHECK_RESULT(des_call != 1);
-    CHECK_RESULT(x.size() != 1);
-    CHECK_RESULT(x.capacity() != 2);
+    CHECK_RESULT(y.size() != 1);
+    CHECK_RESULT(y.capacity() != 2);
     END_TEST_CASE();
 }
 
