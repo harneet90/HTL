@@ -105,7 +105,7 @@ public:
     {
         if(count == 0)
             return;
-        data[count--].~T();
+        data[--count].~T();
     }
     virtual ~HVector(){ 
         _deallocater(data, count);
@@ -197,7 +197,7 @@ public:
     }
     iterator end()
     {
-        return iterator(data + count);
+        return iterator(data + count - 1);
     }
     bool empty()
     {
