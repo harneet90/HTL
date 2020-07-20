@@ -18,6 +18,7 @@ extern int total_pass;
 static int cons_call = 0;  
 static int des_call = 0;
 static int copy_cons_call = 0;
+static int move_cons_call = 0;
 
 class Test
 {
@@ -25,6 +26,7 @@ class Test
     Test(){cons_call++;}
     ~Test(){des_call++;}
     Test(const Test &t){copy_cons_call++;}
+    Test(Test &&t){move_cons_call++;}
 };
 
 #define BEGIN_TEST(name) {cout<<"Testing "<<name<<endl;}
