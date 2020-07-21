@@ -43,18 +43,14 @@ void TestHVector_push_pop()
     for(int i=0;i<3;i++)
         CHECK_RESULT(x[i]!= 5+i);
     HVector<Test> y;
-    cout<<"\n1.Calls"<<des_call<<"\n"<<flush;
     Test t;
     y.push_back(t);
-     cout<<"\n2.Calls"<<des_call<<"\n"<<flush;
     y.push_back(Test());
-     cout<<"\n3.Calls"<<des_call<<"\n"<<flush;
     CHECK_RESULT(cons_call != 2);
-    cout<<"\n4.Calls"<<copy_cons_call<<" "<<move_cons_call<<" "<<des_call<<"\n"<<flush;
     CHECK_RESULT(copy_cons_call != 3);
     CHECK_RESULT(move_cons_call != 0);
     y.pop_back();
-    CHECK_RESULT(des_call != 2);
+    CHECK_RESULT(des_call != 3);
     CHECK_RESULT(y.size() != 1);
     CHECK_RESULT(y.capacity() != 2);
     END_TEST_CASE();
