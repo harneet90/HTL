@@ -31,12 +31,13 @@ class Test
 
 #define BEGIN_TEST(name) {cout<<"Testing "<<name<<endl;}
 #define END_TEST() {cout<<"\tPassed:"<<pass<<"/"<<total<<endl<<endl; grand_total += total; total_pass += pass;}
-#define BEGIN_TEST_CASE(name) cout<<"\t"<<name<<"..."; int initial_fail = total - pass;
+#define BEGIN_TEST_CASE(name) cout<<"\t"<<name<<"..."; int initial_fail = total - pass; \
+                              cons_call = des_call = copy_cons_call = 0; 
+
 #define END_TEST_CASE() {if(initial_fail == (total - pass)) \
                             cout<<"PASS\n"; \
                         else \
                             cout<<"FAIL\n"; \
-                        cons_call = des_call = copy_cons_call = 0; \
                             }
 
 void TestHVector();
