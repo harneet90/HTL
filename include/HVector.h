@@ -2,11 +2,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
+#include <algorithm>
 #include <initializer_list>
 template<class T>
 class HVector
 {
-    T *data;
+    T *_data;
     size_t count;
     size_t buff_size;
     static T* _allocate(size_t n_units)
@@ -24,13 +25,17 @@ class HVector
         _copy(from, to, in_s, in_e, out_s);
         return to;
     }
-    static void _deallocater(T* data, size_t n_units)
+    static void _clear(T* _data, size_t n_units)
     {
         for(size_t i=0;i < n_units;i++)
         {
-            data[i].~T();
+            _data[i].~T();
         }
-        delete[] (uint8_t*)data;
+    }
+    static void _deallocater(T* _data, size_t n_units)
+    {
+        _clear(_data, n_units);
+        delete[] (uint8_t*)_data;
     }
     void _expandBuffer()
     {
@@ -38,52 +43,52 @@ class HVector
             buff_size= 1;
         else
             buff_size*= 2;
-        T *temp= _allocateAndCopy(data, buff_size,0,count,0);
-        _deallocater(data,count);
-        data = temp; 
+        T *temp= _allocateAndCopy(_data, buff_size,0,count,0);
+        _deallocater(_data,count);
+        _data = temp; 
     }
 public:
-    HVector():data(nullptr), count(0), buff_size(0){}
+    HVector():_data(nullptr), count(0), buff_size(0){}
     HVector(size_t size):count(size), buff_size(size)
     {
-        data = _allocate(size);
+        _data = _allocate(size);
         for(int i=0;i < size;i++)
-            new(&data[i]) T();
+            new(&_data[i]) T();
     }
     HVector(size_t size, const T &val):count(size), buff_size(size)
     {
-        data = _allocate(size);
+        _data = _allocate(size);
         for(int i=0;i < size;i++)
-            new(&data[i]) T(val);
+            new(&_data[i]) T(val);
     }
     HVector(const HVector &other):count(other.size), buff_size(other.size)
     {
-        data = _allocateAndCopy(other.data, buff_size, 0, count, 0); 
+        _data = _allocateAndCopy(other._data, buff_size, 0, count, 0); 
     }
-    HVector(HVector &&other):count(other.size), buff_size(other.size), data(other.data)
+    HVector(HVector &&other):count(other.size), buff_size(other.size), _data(other._data)
     {
     }
     
     HVector(std::initializer_list<T> list):count(list.size()),buff_size(list.size())
     {
-        data = _allocate(buff_size);
+        _data = _allocate(buff_size);
         int i=0;
         for(auto ele:list)
-            new(&data[i++]) T(ele);
+            new(&_data[i++]) T(ele);
     }
     HVector& operator=(const HVector &other)
     {
         if(this == &other)
         return *this;
-        _deallocater(data, count);
+        _deallocater(_data, count);
         count = other.count;
         buff_size= other.buff_size;
-        data = _allocateAndCopy(other.data, buff_size, 0, count, 0); 
+        _data = _allocateAndCopy(other._data, buff_size, 0, count, 0); 
         return *this;
     }
     T& operator[](size_t index) const
     {
-        return data[index];
+        return _data[index];
     }
     void push_back(T &&obj)
     {
@@ -91,7 +96,7 @@ public:
         {
             _expandBuffer();
         }
-        new(&data[count++]) T(obj);
+        new(&_data[count++]) T(obj);
     }
     void push_back(const T &obj)
     {
@@ -99,16 +104,16 @@ public:
         {
             _expandBuffer();           
         }
-        new(&data[count++]) T(obj);
+        new(&_data[count++]) T(obj);
     }
     void pop_back()
     {
         if(count == 0)
             return;
-        data[--count].~T();
+        _data[--count].~T();
     }
     virtual ~HVector(){ 
-        _deallocater(data, count);
+        _deallocater(_data, count);
     }
     size_t capacity() const {return buff_size;}
     size_t size() const {return count;}
@@ -193,11 +198,11 @@ public:
     };
     iterator begin()
     {
-        return iterator(data);
+        return iterator(_data);
     }
     iterator end()
     {
-        return iterator(data + count - 1);
+        return iterator(_data + count);
     }
     bool empty()
     {
@@ -207,28 +212,28 @@ public:
     {
         if(index >= count)
         throw std::out_of_range("index out of range");
-        return data[index];
+        return _data[index];
     }
     T front()
     {
-        return data[0];
+        return _data[0];
     }
     T back()
     {
-        return data[count-1];
+        return _data[count-1];
     }
     void reserve(size_t n)
     {
         if(n <= count)
             return;
-        T* temp = _allocateAndCopy(data, n, 0, count, 0);
-        _deallocater(data, count);
-        data = temp;
+        T* temp = _allocateAndCopy(_data, n, 0, count, 0);
+        _deallocater(_data, count);
+        _data = temp;
         buff_size = n;
     }
     iterator insert(iterator pos, const T& ele)
     {
-        T* temp = data;
+        T* temp = _data;
         bool expanded = false;
         long l = pos-begin();
         long i;
@@ -240,17 +245,95 @@ public:
                 buff_size = 1;
             else
                 buff_size *=2;
-            temp = _allocateAndCopy(data, buff_size, 0, l, 0);
+            temp = _allocateAndCopy(_data, buff_size, 0, l, 0);
             expanded = true;
         }  
         for(i = count;i > l;i--)
-            new(&temp[i]) T(data[i-1]);
+            new(&temp[i]) T(_data[i-1]);
         
         new(&temp[l]) T(ele);
         if(expanded)
-            _deallocater(data, count);
+            _deallocater(_data, count);
         count++;
-        data = temp;
-        return iterator(data + l);
+        _data = temp;
+        return iterator(_data + l);
+    }
+    template<class... Args>
+    iterator emplace(iterator pos, Args&&... args)
+    {
+        T* temp = _data;
+        bool expanded = false;
+        long l = pos-begin();
+        long i;
+        if(l < 0 || l > count)
+            return end();
+        if(buff_size <= count)
+        {
+            if(buff_size == 0)
+                buff_size = 1;
+            else
+                buff_size *=2;
+            temp = _allocateAndCopy(_data, buff_size, 0, l, 0);
+            expanded = true;
+        }  
+        for(i = count;i > l;i--)
+            new(&temp[i]) T(_data[i-1]);
+        
+        new(&temp[l]) T(args...);
+        if(expanded)
+            _deallocater(_data, count);
+        count++;
+        _data = temp;
+        return iterator(_data + l);
+    }
+    template<class... Args>
+    void emplace_back(Args&&... args)
+    {
+        if(count == buff_size)
+            _expandBuffer();
+        new(&_data[count++]) T(args...);
+    }
+    void clear()
+    {
+        _clear(_data, count);
+        count=0;
+    }
+    T* data(){return _data;}
+    void swap(HVector &other)
+    {
+        std::swap(count,other.count);
+        std::swap(buff_size,other.buff_size);
+        std::swap(_data,other._data);
+    }
+    iterator erase(iterator pos)
+    {
+        long l = pos-begin();
+        size_t i;
+        if(l < 0 || l >= count)
+            return end();
+        _data[l].~T();
+        for(i=(size_t)l+1;i<count;i++)
+            _data[i-1] = _data[i];
+        count--;
+        return iterator(_data + l);
+    }
+    iterator erase(iterator first, iterator second)
+    {
+        long s = first - begin();
+        long e = second - begin();
+        long st = s;
+        size_t i;
+        if(s < 0 || s >= count || e < s)
+            return end();
+        for(i = (size_t)s;i < (size_t)e;i++)
+        {
+            _data[i].~T();
+        }
+        for(i=(size_t)e;i<count;i++)
+        {
+            _data[s++] = _data[i];
+        }
+        count = count - (e - st);
+        return iterator(_data + st);
     }
 };
