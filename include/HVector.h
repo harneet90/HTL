@@ -336,4 +336,35 @@ public:
         count = count - (e - st);
         return iterator(_data + st);
     }
+    void assign(size_t n, const T& val)
+    {
+        if(n > count)
+        {
+            _deallocater(_data, count);
+            _data = _allocate(n);
+            buff_size = n;
+        }
+        else
+            _clear(_data, count);
+            
+        for(size_t i=0;i < n;i++)
+            new(&_data[i]) T(val);
+        count = n;
+    }
+    
+    void assign(std::initializer_list<T> list)
+    {
+        if(list.size() > count)
+        {
+            _deallocater(_data, count);
+            _data = _allocate(list.size());
+            buff_size = list.size();
+        }
+        else
+            _clear(_data, count);
+    
+        count = list.size();        
+        for(size_t i=0;i < count;i++)
+            new(&_data[i]) T(list[i]);
+    }
 };
