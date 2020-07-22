@@ -62,10 +62,9 @@ void TestHVector_begin_end()
     HVector<int> x;
     x.push_back(5);
     CHECK_RESULT(*(x.begin()) != 5);
-    CHECK_RESULT(x.begin() != x.end());
-    x.push_back(6);
-    CHECK_RESULT(*(x.end()) != 6);
     CHECK_RESULT(x.begin() + 1 != x.end());
+    x.push_back(6);
+    CHECK_RESULT(*(x.end() - 1) != 6);
     int i=0;
     for(auto itr = x.begin();itr != x.end();itr++,i++)
         CHECK_RESULT(*itr != 5 + i);
