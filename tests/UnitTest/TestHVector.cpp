@@ -116,16 +116,9 @@ void TestHVector_erase()
 {
     BEGIN_TEST_CASE("HVector_erase");
     HVector<int> x{2,1,2,7,8,3,4,5,7};
-    
-    cout<<"0."<<x.size()<<"\n";
     x.erase(x.begin());
-    cout<<"1."<<x.size()<<"\n";
     x.erase(x.begin()+2,x.begin()+4);
-    
-    cout<<"2."<<x.size()<<"\n";
-    x.erase(x.end());
-    
-    cout<<"3."<<x.size()<<"\n";
+    x.erase(x.end()-1);
     CHECK_RESULT(x.size() != 5);
 
     for(int i = 0;i < x.size();i++)
