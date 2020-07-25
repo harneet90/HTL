@@ -363,8 +363,9 @@ public:
         else
             _clear(_data, count);
     
-        count = list.size();        
+        count = list.size();
+        int i=0;
         for(auto ele:list)
-            new(&_data[i]) T(ele);
+            new(&_data[i++]) T(ele);
     }
 };
