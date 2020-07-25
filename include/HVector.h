@@ -238,7 +238,7 @@ public:
         long l = pos-begin();
         long i;
         if(l < 0 || l > count)
-        return end();
+            return end();
         if(buff_size <= count)
         {
             if(buff_size == 0)
@@ -257,6 +257,101 @@ public:
         count++;
         _data = temp;
         return iterator(_data + l);
+    }
+    iterator insert(iterator pos, size_t n, const T& ele)
+    {
+        T* temp = _data;
+        bool expanded = false;
+        long l = pos-begin();
+        long i, j;
+        if(l < 0 || l > count)
+            return end();
+        if(buff_size < count + n)
+        {
+            if(buff_size == 0)
+                buff_size = n;
+            else
+            {
+                while(buff_size < count + n)
+                    buff_size *= 2;
+            }
+            temp = _allocateAndCopy(_data, buff_size, 0, l, 0);
+            expanded = true;
+        }  
+        for(i = count + n -1, j=count;i >= l + n;i--,j--)
+            new(&temp[i]) T(_data[j-1]);
+        for(i = l;i < l+n;i++)
+            new(&temp[i]) T(ele);
+        if(expanded)
+            _deallocater(_data, count);
+        count += n;
+        _data = temp;
+        return iterator(_data + l + n);
+    }
+    iterator insert(iterator pos, std::initializer_list<T> list)
+    {
+        T* temp = _data;
+        size_t n = list.size();
+        bool expanded = false;
+        long l = pos-begin();
+        long i, j;
+        if(l < 0 || l > count)
+            return end();
+        if(buff_size < count + n)
+        {
+            if(buff_size == 0)
+                buff_size = n;
+            else
+            {
+                while(buff_size < count + n)
+                    buff_size *= 2;
+            }
+            temp = _allocateAndCopy(_data, buff_size, 0, l, 0);
+            expanded = true;
+        }  
+        for(i = count + n -1, j=count;i >= l + n;i--,j--)
+            new(&temp[i]) T(_data[j-1]);
+        i=l;
+        for(auto ele:list)
+            new(&temp[i++]) T(ele);
+        if(expanded)
+            _deallocater(_data, count);
+        count += n;
+        _data = temp;
+        return iterator(_data + l + n);
+    }
+    template<class InputIterator>
+    iterator insert(iterator pos, InputIterator first, InputIterator last)
+    {
+        T* temp = _data;
+        size_t n = last - first;
+        bool expanded = false;
+        long l = pos-begin();
+        long i, j;
+        if(l < 0 || l > count)
+            return end();
+        if(buff_size < count + n)
+        {
+            if(buff_size == 0)
+                buff_size = n;
+            else
+            {
+                while(buff_size < count + n)
+                    buff_size *= 2;
+            }
+            temp = _allocateAndCopy(_data, buff_size, 0, l, 0);
+            expanded = true;
+        }  
+        for(i = count + n -1, j=count;i >= l + n;i--,j--)
+            new(&temp[i]) T(_data[j-1]);
+        i=l;
+        for(auto itr=first;itr != last;itr++)
+            new(&temp[i++]) T(*itr);
+        if(expanded)
+            _deallocater(_data, count);
+        count += n;
+        _data = temp;
+        return iterator(_data + l + n);
     }
     template<class... Args>
     iterator emplace(iterator pos, Args&&... args)
@@ -367,5 +462,22 @@ public:
         int i=0;
         for(auto ele:list)
             new(&_data[i++]) T(ele);
+    }
+    template<class InputIterator>
+    void assign(InputIterator first, InputIterator last)
+    {
+        if(last - first > count)
+        {
+            _deallocater(_data, last - first);
+            _data = _allocate(last - first);
+            buff_size = last - first;
+        }
+        else
+            _clear(_data, count);
+    
+        count = last - first;
+        int i=0;
+        for(auto itr = first; itr != last; itr++)
+            new(&_data[i++]) T(*itr);
     }
 };
