@@ -71,11 +71,91 @@ void TestHVector_begin_end()
     END_TEST_CASE();
 }
 
+void TestHVector_insert()
+{
+    BEGIN_TEST_CASE("HVector_insert");
+    HVector<int> x{2,4,5};
+    x.insert(x.begin(),1);
+    x.insert(x.begin() + 2, 3);
+    x.insert(x.end(), 6);
+    int i=0;
+    for(auto itr = x.begin();itr != x.end();itr++,i++)
+        CHECK_RESULT(*itr != 1 + i);
+    END_TEST_CASE();
+}
+
+void TestHVector_emplace()
+{
+    BEGIN_TEST_CASE("HVector_emplace");
+    HVector<int> x{2,4,5};
+    x.emplace(x.begin(),1);
+    x.emplace(x.begin() + 2, 3);
+    x.emplace_back(6);
+    for(int i=0;i < x.size();i++)
+        CHECK_RESULT(x[i] != 1 + i);
+    END_TEST_CASE();
+}
+
+void TestHVector_swap()
+{
+    BEGIN_TEST_CASE("HVector_swap");
+    HVector<int> x{6,6};
+    HVector<int> y{7,7,7};
+    x.swap(y);
+    CHECK_RESULT(x.size() != 3);
+    CHECK_RESULT(y.size() != 2);
+    int i=0;
+    for(i = 0;i < x.size();i++)
+        CHECK_RESULT(x[i] != 7);
+    for(i = 0;i < y.size();i++)
+        CHECK_RESULT(y[i] != 6);
+    END_TEST_CASE();
+}
+
+void TestHVector_erase()
+{
+    BEGIN_TEST_CASE("HVector_erase");
+    HVector<int> x{2,1,2,7,8,3,4,5,7};
+    x.erase(x.begin());
+    x.erase(x.begin()+2,x.begin()+4);
+    x.erase(x.end());
+    CHECK_RESULT(x.size() != 5);
+
+    for(int i = 0;i < x.size();i++)
+        CHECK_RESULT(x[i] != 1+i);
+    END_TEST_CASE();
+}
+
+void TestHVector_assign()
+{
+    BEGIN_TEST_CASE("HVector_assign");
+    HVector<int> x{1,2,3,4,5};
+    x.assign(4,4);
+    CHECK_RESULT(x.size() != 4);
+    CHECK_RESULT(x.capacity() != 5);
+
+    for(int i = 0;i < x.size();i++)
+        CHECK_RESULT(x[i] != 4);
+    
+    x.assign({1,2,3,4,5,6});
+    CHECK_RESULT(x.size() != 6);
+    CHECK_RESULT(x.capacity() != 6);
+
+    for(int i = 0;i < x.size();i++)
+        CHECK_RESULT(x[i] != 1 + i);
+    END_TEST_CASE();
+}
+
 void TestHVector()
 {
     BEGIN_TEST("HVector");
     TestHVector_cons();
     TestHVector_push_pop();
     TestHVector_begin_end();
+    TestHVector_insert();
+    TestHVector_emplace();
+    TestHVector_swap();
+    TestHVector_erase();
+    TestHVector_assign();
     END_TEST();
 }
