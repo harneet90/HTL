@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <initializer_list>
+#include <type_traits>
 template<class T>
 class HVector
 {
@@ -466,6 +467,11 @@ public:
     template<class InputIterator>
     void assign(InputIterator first, InputIterator last)
     {
+        if(std::is_integral<InputIterator>::value)
+        {
+            assign((size_t)first,(T)last);
+            return;
+        }
         if(last - first > count)
         {
             _deallocater(_data, last - first);
