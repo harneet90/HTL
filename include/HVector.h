@@ -467,11 +467,11 @@ public:
     template<class InputIterator>
     void assign(InputIterator first, InputIterator last)
     {
-        assign_helper(first, last, std::is_integral<InputIterator>::value); 
+        assign_helper(first, last, std::integral_constant<bool,std::is_integral<InputIterator>::value>()); 
     }
     private:
     template<class InputIterator>
-    void assign_helper(InputIterator first, InputIterator last,std::true_type)
+    void assign_helper(InputIterator first, InputIterator last,std::false_type)
     {
         if(last - first > count)
         {
@@ -488,7 +488,7 @@ public:
             new(&_data[i++]) T(*itr);
     }
     template<class InputIterator>
-    void assign_helper(InputIterator first, InputIterator last,std::false_type)
+    void assign_helper(InputIterator first, InputIterator last,std::true_type)
     {
         assign((size_t)first,(T)last);
     }
