@@ -467,11 +467,12 @@ public:
     template<class InputIterator>
     void assign(InputIterator first, InputIterator last)
     {
-        if(std::is_integral<InputIterator>::value)
-        {
-            assign((size_t)first,(T)last);
-            return;
-        }
+        assign_helper(first, last, std::is_integral<InputIterator>::value); 
+    }
+    private:
+    template<class InputIterator>
+    void assign_helper(InputIterator first, InputIterator last,std::true_type)
+    {
         if(last - first > count)
         {
             _deallocater(_data, last - first);
@@ -485,5 +486,10 @@ public:
         int i=0;
         for(auto itr = first; itr != last; itr++)
             new(&_data[i++]) T(*itr);
+    }
+    template<class InputIterator>
+    void assign_helper(InputIterator first, InputIterator last,std::false_type)
+    {
+        assign((size_t)first,(T)last);
     }
 };
