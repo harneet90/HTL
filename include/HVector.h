@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <initializer_list>
 #include <type_traits>
-template<class T>
+template<class T, class Alloc=allocator<T>>
 class HVector
 {
     T *_data;
@@ -13,7 +13,7 @@ class HVector
     size_t buff_size;
     static T* _allocate(size_t n_units)
     {
-        return (T*)new uint8_t[n_units * sizeof(T)];
+        return (T*)Alloc().allocate(n_units);
     }
     static void _copy(T *from, T *to, size_t in_s,size_t in_e, size_t out_s)
     {
@@ -36,7 +36,7 @@ class HVector
     static void _deallocater(T* _data, size_t n_units)
     {
         _clear(_data, n_units);
-        delete[] (uint8_t*)_data;
+        Alloc().deallocate(_data, n_units);
     }
     void _expandBuffer()
     {
@@ -49,6 +49,15 @@ class HVector
         _data = temp; 
     }
 public:
+    typedef Alloc allocator_type;
+    typedef T value_type;
+    typedef T& reference;
+    typedef T* pointer;
+    typedef const T& const_reference;
+    typedef const T* const_pointer;
+    typedef ptrdiff_t difference_type;
+    typedef size_t size_type;
+    
     HVector():_data(nullptr), count(0), buff_size(0){}
     HVector(size_t size):count(size), buff_size(size)
     {
